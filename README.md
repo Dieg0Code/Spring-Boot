@@ -197,3 +197,35 @@ public class HomeController {
 ```
 
 La variable ``mensaje`` es agregada al modelo desde un controlador, en este caso tendría el texto ``"Hola Mundo"``.
+
+## Iteraciones en Thymeleaf
+
+En Thymeleaf las iteraciones se pueden realizar con la expresión ``th:each``. Similar a un ``for`` en Java.
+
+Esta expresión puede iterar sobre diferentes tipos de datos como:
+
+- List
+- Map
+- Iterable
+
+```html
+<!-- Vista (detalle.html) -->
+<tr th:each="tmpEmp: ${empleos}">
+
+    <td th:text="${tmpEmp}" />
+</tr>
+```
+
+Con la expresión ``th:each`` se puede iterar sobre una lista de objetos, luego declaramos la variable temporal ``tmpEmp`` la cual va a representar cada elemento durante la iteración de la lista, luego con ``${empleos}`` se indica el nombre del atributo que se va a iterar. De esta forma en donde este declarado el ``th:each``, se va a renderizar ``n`` veces dependiendo del numero de elementos que contenga la lista.
+
+```java
+// Controlador
+@GetMapping("/detalle")
+public String mostrarDetalle(Model model) {
+    List<String> lista = new LinkedList<>();
+    lista.add("Ingeniero de Sistemas");
+    lista.add("Auxiliar de Contabilidad");
+    model.addAttribute("empleos", lista);
+    return "detalle";
+}
+```
