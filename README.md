@@ -229,3 +229,30 @@ public String mostrarDetalle(Model model) {
     return "detalle";
 }
 ```
+
+## Condicionales en Thymeleaf
+
+### Operador Elvis (?:)
+
+El operador Elvis permite renderizar texto **dentro** de un elemento HTML, dependiendo de una expresión Booleana. Es muy similar al operador ternario en otros lenguajes de programación.
+
+Ejemplo:
+
+```html
+<td th:text="${usuarios.estatus == 1} ? 'ACTIVO' : 'BLOQUEADO'"/>
+```
+
+Donde ``ACTIVO`` es el valor renderizado si la expresión es verdadera o ``BLOQUEADO`` si es falsa.
+
+### IF - Unless
+
+La expresión ``if - unless`` permite renderizar un elemento HTML, dependiendo de una expresión Booleana. Es muy similar a un ``if - else`` en otros lenguajes de programación.
+
+Ejemplo:
+
+```html
+<td>
+    <span th:if="${alumno.genero == 'F'}"> Femenino </span>
+    <span th:unless="${alumno.genero == 'F'}"> Masculino </span>
+</td>
+```
