@@ -256,3 +256,53 @@ Ejemplo:
     <span th:unless="${alumno.genero == 'F'}"> Masculino </span>
 </td>
 ```
+
+## Urls relativas al ContextPath en Thymeleaf
+
+Las URLs relativas al ContextPath son las que son relativas al directorio raíz (ROOT) de una aplicación web, una vez están publicadas en el servidor.
+
+Las URLs relativas al ContextPath deben iniciar con "/" cuando vayamos a formar una URL para referenciar un recurso (imágenes, CSS, JS, PDF, etc) en nuestra aplicación.
+
+En un proyecto web cuando se utiliza ``Thymeleaf`` como motor de plantillas, los recursos estáticos deben guardarse en el directorio **src/main/resources/static**.
+
+Ejemplos:
+
+- Para incluir el archivo CSS myStyles.css en una vista se utilizaría la siguiente expresión:
+
+```html
+<link th:href"@{/css/myStyles.css}" rel="stylesheet">
+```
+
+- Para incluir el archivo JavaScript funciones.js en una vista se utilizaría la siguiente expresión:
+
+```html
+<script th:src="@{/js/funciones.js}"></script>
+```
+
+- Para incluir la imagen foto.png en una vista, se utilizaría la siguiente expresión:
+
+```html
+<img th:src="@{/images/foto.png}" width="136" height="136">
+```
+
+Para incluir archivos JavaScript y CSS vía CDN (content delivery network) se utiliza la sintaxis estándar (sin expresiones Thymeleaf).
+
+## Arquitectura de Spring MVC - Ciclo de vida de una petición HTTP
+
+![arquitectura-spring-mvc](/assets/arq-spring-mvc.png)
+
+El ciclo de vida de una petición HTTP comienza cuando un usuario hace una solicitud a una aplicación desarrollada en este caso con **Spring MVC** que está alojada en un servidor web, este servidor web por lo general tiene integrado un motor para procesar Servlets y JSP, en La gráfica se muestra a manera de ejemplo que este motor de Servlets es **apache tomcat**.
+
+La petición HTTP puede ser solicitar una página web por medio de una URL a través de un navegador, después de que la petición es enviada por el usuario, esta es recibid por el ``Front Controller`` que básicamente es un Servlet llamado ``DispatcherServlet`` el cual está configurado para recibir todas las URLs que sean procesadas por Spring MVC. En términos sencillos este Servlet recibe todas las peticiones HTTP, en la gráfica está representado por el numero ``2``.
+
+Después de que el ``Front Controller`` recibe la petición analiza la URL a la cual fué hecha la petición, en este punto según la configuración del ``DispatcherServlet`` el ``From Controller`` va a buscar las clases que tienen la notación ``@Controller`` que es propia de Spring MVC, es decir, va a revisar todos los controladores que hay registrados para ver cual está mapeado a la URL, en caso de encontrar un controlador mapeado a la URL a la cual fué enviada la petición, el ``Front Controller`` delega la petición (numero ``3``), en caso de no encontrar un ``Controller`` mapeado a esta URL, el ``Front Controller`` enviá el error ``404 Not Found``.
+
+Si existe un controlador encargado de procesar la URL, el controlador recibe la petición y se encarga de procesarla, aquí es donde la verdadera lógica de la aplicación se aplica, por lo general esta lógica consiste en recibir los datos enviados por el usuario a través de su petición, por ejemplo los datos de un formulario HTML, posteriormente estos datos son procesados, por ejemplo pueden ser almacenados en una base de datos, hacer algunos cálculos o generar reportes, en la gráfica es el numero ``4``.
+
+Para realizar el procesamiento de los datos y en general la lógica del negocio, los controladores casi siempre hacen uso de componentes de la capa de servicio de la aplicación, estos componentes de servicio a su vez utilizan componentes de la capa de datos para interactuar con la base de datos. Esto no siempre es así, puede ser que un controlador solo tenga asignada la tarea de regresar una vista con un formulario HTML para ser completado por el usuario y por lo tanto puede ser que no necesite ningún otro tipo de componente.
+
+Después de que el controlador ha terminado de procesar la solicitud, el controlador puede generar el modelo que será renderizado en la vista posteriormente. El modelo básicamente son objetos que representan los datos de nuestra aplicación, en la gráfica es el numero ``5``. Una vez que esta generado el modelo el controlador debe indicar cual será la vista que posteriormente será la encargada de renderizar el modelo que previamente ha sido generado, en este paso el controlador envía el modelo junto con el nombre de la vista al ``Front Controller`` en la gráfica es el numero ``6``. En el ``Front Controller`` está la configuración del ``view resolver``, este es un componente de Spring-MVC que básicamente es el encargado de buscar las vistas de nuestra aplicación, con está configuración el ``Front Controller`` busca el nombre de la vista que previamente fue enviada por el controlador y la renderiza, en la gráfica es el numero ``7``.
+
+Después de que la respuesta del usuario es generada, que por lo general es HTML, el motor de plantillas regresa el control de flujo de la petición al ``Front Controller``, en la gráfica es el paso numero ``8``.
+
+Después de que el ``Front Controller`` recibe la respuesta final del usuario, se prepara y en la mayoría de los casos esta respuesta es enviada al navegador en formato HTML, en la gráfica es el paso numero ``9`` y ``10``.
